@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetic Blade Artwork Studio</title>
+<style>
+:root{--bg:#0f0f13;--s1:#1a1a24;--s2:#242430;--s3:#2e2e3e;--bord:#333344;--acc:#7c6af5;--acc2:#f59e0b;--txt:#e2e2f0;--dim:#8888a0;--danger:#ef4444;--ok:#22c55e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.5;}
+a{color:var(--acc);}
+/* ---- Layout ---- */
+.app-header{background:var(--s1);border-bottom:1px solid var(--bord);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;}
+.app-header h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.02em;}
+.app-header .sub{color:var(--dim);font-size:12px;margin-left:4px;}
+.tab-bar{display:flex;gap:0;background:var(--s1);border-bottom:1px solid var(--bord);padding:0 20px;position:sticky;top:57px;z-index:40;}
+.tab-btn{padding:11px 18px;cursor:pointer;border:none;background:none;color:var(--dim);font-size:13px;font-weight:500;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.tab-btn:hover{color:var(--txt);}
+.tab-btn.active{color:var(--acc);border-bottom-color:var(--acc);}
+.main{padding:24px;max-width:1300px;margin:0 auto;}
+/* ---- Grid ---- */
+.two-col{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start;}
+.col-right{display:flex;flex-direction:column;gap:16px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.two-eq{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* ---- Card ---- */
+.card{background:var(--s1);border:1px solid var(--bord);border-radius:10px;padding:18px;}
+.card+.card{margin-top:14px;}
+.card-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+/* ---- Upload zone ---- */
+.upload-zone{border:2px dashed var(--bord);border-radius:8px;padding:18px 12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--s2);position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--acc);background:rgba(124,106,245,.06);}
+.upload-zone .thumb{width:100%;max-height:90px;object-fit:contain;border-radius:4px;}
+.upload-zone .uz-icon{font-size:28px;opacity:.45;}
+.upload-zone .uz-label{font-size:12px;color:var(--dim);}
+.upload-zone .uz-name{font-size:11px;color:var(--ok);margin-top:2px;}
+.upload-zone .rep-btn{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.15);color:#fff;padding:3px 8px;border-radius:5px;cursor:pointer;font-size:11px;z-index:2;}
+.upload-zone .rep-btn:hover{background:var(--acc);}
+.upload-zone input[type=file]{display:none;}
+/* ---- Form ---- */
+.field{margin-bottom:10px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--dim);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+.field input[type=number],.field select{width:100%;background:var(--s2);border:1px solid var(--bord);border-radius:6px;padding:7px 10px;color:var(--txt);font-size:13px;outline:none;transition:border-color .15s;-moz-appearance:textfield;}
+.field input[type=number]:focus,.field select:focus{border-color:var(--acc);}
+.field input[type=number]::-webkit-outer-spin-button,.field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+/* ---- Tooltip ---- */
+.tip{position:relative;display:inline-flex;}
+.tip .tip-icon{width:15px;height:15px;border-radius:50%;background:var(--s3);border:1px solid var(--bord);color:var(--dim);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;}
+.tip .tip-box{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#2a2a3e;border:1px solid var(--bord);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--txt);line-height:1.5;width:210px;z-index:200;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.tip:hover .tip-box{opacity:1;}
+/* ---- Buttons ---- */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--acc);color:#fff;}
+.btn-primary:hover{background:#8f7fff;}
+.btn-secondary{background:var(--s2);color:var(--txt);border:1px solid var(--bord);}
+.btn-secondary:hover{border-color:var(--acc);color:var(--acc);}
+.btn-success{background:var(--ok);color:#fff;}
+.btn-success:hover{opacity:.85;}
+.btn-warn{background:var(--acc2);color:#000;}
+.btn-warn:hover{opacity:.85;}
+.btn-lg{padding:12px 26px;font-size:15px;border-radius:9px;}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+/* ---- Badge ---- */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;}
+.badge-acc{background:rgba(124,106,245,.2);color:#a99aff;}
+.badge-ok{background:rgba(34,197,94,.2);color:var(--ok);}
+.badge-warn{background:rgba(245,158,11,.2);color:var(--acc2);}
+/* ---- Stats ---- */
+.stats-row{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0;}
+.stat-box{background:var(--s2);border:1px solid var(--bord);border-radius:7px;padding:10px 14px;min-width:90px;}
+.stat-box .sv{font-size:20px;font-weight:700;color:#fff;line-height:1;}
+.stat-box .sk{font-size:10px;color:var(--dim);margin-top:3px;text-transform:uppercase;letter-spacing:.04em;}
+/* ---- Preview canvases ---- */
+.preview-wrap{background:var(--s2);border:1px solid var(--bord);border-radius:8px;overflow:hidden;}
+.preview-wrap canvas{width:100%;height:auto;display:block;}
+.preview-label{padding:7px 10px;font-size:11px;color:var(--dim);text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--s1);border-top:1px solid var(--bord);}
+.angle-main canvas{width:100%;height:auto;display:block;}
+/* ---- Slider ---- */
+.slider-wrap{padding:10px 0 4px;}
+.slider-wrap input[type=range]{width:100%;accent-color:var(--acc);cursor:pointer;}
+.slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:2px;}
+.slider-val{text-align:center;font-size:22px;font-weight:700;color:var(--acc);margin-bottom:4px;}
+/* ---- Warning / Info box ---- */
+.warn-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:12px 14px;font-size:12px;color:#f5c060;line-height:1.6;}
+.info-box{background:rgba(124,106,245,.08);border:1px solid rgba(124,106,245,.25);border-radius:8px;padding:12px 14px;font-size:12px;color:#a89aff;line-height:1.6;}
+/* ---- Checklist ---- */
+.checklist{list-style:none;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bord);font-size:13px;}
+.checklist li:last-child{border-bottom:none;}
+.cli{font-size:16px;flex-shrink:0;margin-top:1px;}
+/* ---- Progress ---- */
+.prog-bar-wrap{background:var(--s2);border-radius:20px;height:6px;overflow:hidden;margin:8px 0;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--acc),#a89aff);border-radius:20px;transition:width .3s;}
+/* ---- Notes ---- */
+.production-note{border-left:3px solid var(--acc2);padding:10px 14px;background:rgba(245,158,11,.05);border-radius:0 6px 6px 0;font-size:12px;color:#ddd;line-height:1.6;margin:10px 0;}
+/* ---- Separator ---- */
+.sep{height:1px;background:var(--bord);margin:16px 0;}
+/* ---- Mode toggle ---- */
+.mode-btns{display:flex;gap:8px;margin-bottom:14px;}
+.mode-btn{flex:1;padding:9px;border-radius:7px;border:1px solid var(--bord);background:var(--s2);color:var(--dim);cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s;}
+.mode-btn.active{background:var(--acc);border-color:var(--acc);color:#fff;}
+/* ---- Scrollable blade list ---- */
+.blade-list{max-height:200px;overflow-y:auto;font-size:12px;}
+.blade-list::-webkit-scrollbar{width:4px;}
+.blade-list::-webkit-scrollbar-track{background:var(--s2);}
+.blade-list::-webkit-scrollbar-thumb{background:var(--bord);border-radius:4px;}
+.blade-row{display:grid;grid-template-columns:50px 1fr 1fr;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);color:var(--dim);}
+.blade-row:first-child{font-weight:700;color:var(--txt);font-size:11px;text-transform:uppercase;}
+/* ---- Responsive ---- */
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr;}
+  .three-col{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .three-col,.two-eq{grid-template-columns:1fr;}
+  .main{padding:14px;}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<script>
+'use strict';
+const {useState,useEffect,useRef,useCallback,useMemo}=React;
+
+/* ================================================================
+   UTILITIES
+================================================================ */
+const cmToPx=(cm,dpi)=>Math.round(cm*dpi/2.54);
+const mmToPx=(mm,dpi)=>Math.round(mm*dpi/25.4);
+const calcNumBlades=(wCm,bwMm,bsMm)=>Math.max(1,Math.floor((wCm*10)/(Math.max(0.1,bwMm)+Math.max(0,bsMm))));
+
+function drawImageCover(ctx,img,x,y,w,h){
+  if(!img)return;
+  const iA=img.width/img.height,cA=w/h;
+  let sx,sy,sw,sh;
+  if(iA>cA){sh=img.height;sw=sh*cA;sx=(img.width-sw)/2;sy=0;}
+  else{sw=img.width;sh=sw/cA;sx=0;sy=(img.height-sh)/2;}
+  ctx.drawImage(img,sx,sy,sw,sh,x,y,w,h);
+}
+
+function loadImageFromFile(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(url);res(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('Could not load image'));};
+    img.src=url;
+  });
+}
+
+async function generateTestImg(w,h,stops,label){
+  const c=document.createElement('canvas');
+  c.width=w;c.height=h;
+  const ctx=c.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,w,h);
+  stops.forEach(([t,col])=>g.addColorStop(t,col));
+  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  // circle
+  ctx.fillStyle='rgba(255,255,255,.25)';
+  ctx.beginPath();ctx.arc(w/2,h/2,Math.min(w,h)*.32,0,Math.PI*2);ctx.fill();
+  // cross-hatch pattern
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=2;
+  for(let i=0;i<w;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke();}
+  // big label
+  ctx.fillStyle='rgba(255,255,255,.9)';
+  ctx.font=`bold ${Math.round(Math.min(w,h)*.14)}px sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(label,w/2,h/2);
+  const img=new Image();
+  return new Promise(res=>{img.onload=()=>res(img);img.src=c.toDataURL();});
+}
+
+/* ================================================================
+   CANVAS RENDERERS
+================================================================ */
+function setupCanvas(canvas,W,H){
+  canvas.width=W;canvas.height=H;
+  return canvas.getContext('2d');
+}
+
+/* Blade geometry helpers */
+function bladeGeom(settings,canvasW){
+  const{artworkWidth,bladeWidth,bladeSpacing}=settings;
+  const n=calcNumBlades(artworkWidth,bladeWidth,bladeSpacing);
+  const unitPx=canvasW/n;
+  const bwPx=unitPx*(bladeWidth/(bladeWidth+Math.max(0,bladeSpacing)));
+  const spPx=unitPx-bwPx;
+  return{n,unitPx,bwPx,spPx};
+}
+
+/* Draw blade lines overlay */
+function drawBladeOverlay(ctx,settings,W,H,alpha=0.12){
+  const{n,unitPx,bwPx}=bladeGeom(settings,W);
+  ctx.strokeStyle=`rgba(0,0,0,${alpha})`;
+  ctx.lineWidth=Math.max(0.5,bwPx*.02);
+  for(let i=0;i<n;i++){
+    const x=i*unitPx;
+    ctx.strokeRect(x+.5,0,bwPx,H);
+  }
+}
+
+/* Static left or right view */
+function renderStaticView(canvas,img,settings){
+  const W=canvas.width,H=canvas.height;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a0a0e';ctx.fillRect(0,0,W,H);
+  if(!img){
+    ctx.fillStyle='#2a2a3a';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('No image',W/2,H/2);
+    return;
+  }
+  drawImageCover(ctx,img,0,0,W,H);
+  drawBladeOverlay(ctx,settings,W,H,0.1);
+}
+
+/* Front view */
+function renderFrontView(canvas,imgA,imgB,imgC,settings){
+  const W=canvas.width,H=canvas.height;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a0a0e';ctx.fillRect(0,0,W,H);
+  if(imgC){
+    drawImageCover(ctx,imgC,0,0,W,H);
+  }else{
+    if(imgA){ctx.globalAlpha=.55;drawImageCover(ctx,imgA,0,0,W,H);}
+    if(imgB){ctx.globalAlpha=.55;drawImageCover(ctx,imgB,0,0,W,H);}
+    ctx.globalAlpha=1;
+  }
+  drawBladeOverlay(ctx,settings,W,H,0.2);
+}
+
+/* Angle slider preview — the main kinetic simulation */
+function renderAngleView(canvas,imgA,imgB,imgC,settings,angle){
+  const W=canvas.width,H=canvas.height;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a0a0e';ctx.fillRect(0,0,W,H);
+
+  const t=Math.max(-1,Math.min(1,angle/45)); // -1=left, 0=front, +1=right
+  const absT=Math.abs(t);
+
+  /* --- Background layer (always draw, fade with angle) --- */
+  if(imgC){
+    ctx.globalAlpha=Math.max(0,1-absT*1.4);
+    drawImageCover(ctx,imgC,0,0,W,H);
+    ctx.globalAlpha=1;
+  }else{
+    // blended stand-in for background
+    if(imgA){ctx.globalAlpha=Math.max(0,(1-absT)*.45);drawImageCover(ctx,imgA,0,0,W,H);}
+    if(imgB){ctx.globalAlpha=Math.max(0,(1-absT)*.45);drawImageCover(ctx,imgB,0,0,W,H);}
+    ctx.globalAlpha=1;
+  }
+
+  const{n,unitPx,bwPx}=bladeGeom(settings,W);
+
+  /* --- Blade strip layer --- */
+  for(let i=0;i<n;i++){
+    const bx=i*unitPx;
+    const srcFrac=i/n;
+    const srcWFrac=1/n;
+
+    if(t<0&&imgA){
+      // Left view: show Image A strips, opacity grows as we tilt left
+      ctx.globalAlpha=Math.min(1,absT*1.6);
+      ctx.drawImage(imgA,srcFrac*imgA.width,0,srcWFrac*imgA.width,imgA.height,bx,0,bwPx,H);
+    }else if(t>0&&imgB){
+      // Right view: show Image B strips
+      ctx.globalAlpha=Math.min(1,absT*1.6);
+      ctx.drawImage(imgB,srcFrac*imgB.width,0,srcWFrac*imgB.width,imgB.height,bx,0,bwPx,H);
+    }
+  }
+  ctx.globalAlpha=1;
+
+  /* --- Blade edge lines (more visible near front) --- */
+  const lineAlpha=Math.max(0,.2-absT*.18);
+  if(lineAlpha>.01){
+    ctx.strokeStyle=`rgba(255,255,255,${lineAlpha})`;
+    ctx.lineWidth=1;
+    for(let i=0;i<n;i++){
+      ctx.beginPath();ctx.moveTo(i*unitPx+bwPx,0);ctx.lineTo(i*unitPx+bwPx,H);ctx.stroke();
+    }
+  }
+}
+
+/* Simple 3D mockup — isometric-style perspective */
+function render3DMockup(canvas,imgA,imgB,imgC,settings){
+  const W=canvas.width,H=canvas.height;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  // Background
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#1a1a2e');bg.addColorStop(1,'#0b0b14');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  // Board face dimensions
+  const bX=W*.08,bY=H*.1;
+  const bW=W*.84,bH=H*.68;
+  const sk=W*.04; // horizontal skew for top edge (perspective)
+
+  // Board face (quadrilateral, top edge shifted right for 3D feel)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(bX,bY+bH);         // bottom-left
+  ctx.lineTo(bX+bW,bY+bH);     // bottom-right
+  ctx.lineTo(bX+bW+sk,bY);     // top-right
+  ctx.lineTo(bX+sk,bY);        // top-left
+  ctx.closePath();
+
+  if(imgC){
+    ctx.save();
+    ctx.clip();
+    // Draw background image onto the (slightly skewed) board face
+    // Use simple drawImage; slight distortion is acceptable
+    ctx.setTransform(1,0,sk/bH,1,bX-sk*bY/bH,bY);
+    ctx.drawImage(imgC,0,0,bW,bH);
+    ctx.restore();
+  }else{
+    ctx.fillStyle='#22223a';
+    ctx.fill();
+  }
+  // Board border
+  ctx.strokeStyle='rgba(124,106,245,.4)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.restore();
+
+  // Board bottom edge (thickness)
+  const edH=H*.035;
+  ctx.fillStyle='#111120';
+  ctx.beginPath();
+  ctx.moveTo(bX,bY+bH);ctx.lineTo(bX+bW,bY+bH);ctx.lineTo(bX+bW,bY+bH+edH);ctx.lineTo(bX,bY+bH+edH);
+  ctx.closePath();ctx.fill();
+  ctx.strokeStyle='rgba(80,80,120,.5)';ctx.lineWidth=1;ctx.stroke();
+
+  // Blades
+  const{n,unitPx,bwPx}=bladeGeom(settings,bW);
+  const depthPx=H*.055; // blade sticks out this many px toward viewer (visual)
+
+  for(let i=0;i<n;i++){
+    const fx=bX+i*unitPx;           // front-left x of blade face on board
+    const fx2=fx+bwPx;              // front-right x
+
+    // Blade front face (acrylic look)
+    ctx.fillStyle='rgba(180,210,255,.06)';
+    ctx.strokeStyle='rgba(180,210,255,.2)';
+    ctx.lineWidth=.5;
+    ctx.beginPath();
+    ctx.moveTo(fx,bY);ctx.lineTo(fx2,bY);ctx.lineTo(fx2,bY+bH);ctx.lineTo(fx,bY+bH);
+    ctx.closePath();ctx.fill();ctx.stroke();
+
+    // Blade top face (shows depth)
+    ctx.fillStyle='rgba(200,220,255,.12)';
+    ctx.beginPath();
+    ctx.moveTo(fx,bY);             // front-left
+    ctx.lineTo(fx2,bY);            // front-right
+    ctx.lineTo(fx2+sk*.5,bY-depthPx); // back-right (up + skewed)
+    ctx.lineTo(fx+sk*.5,bY-depthPx);  // back-left
+    ctx.closePath();ctx.fill();ctx.stroke();
+
+    // Right face of blade with Image B strip
+    if(imgB&&bwPx>1){
+      const rfW=Math.max(2,depthPx*.55);
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(fx2,bY);
+      ctx.lineTo(fx2+sk*.5,bY-depthPx);
+      ctx.lineTo(fx2+sk*.5,bY+bH-depthPx*.1);
+      ctx.lineTo(fx2,bY+bH);
+      ctx.closePath();
+      ctx.clip();
+      const sx=(i/n)*imgB.width,sw=imgB.width/n;
+      ctx.drawImage(imgB,sx,0,sw,imgB.height,fx2,bY-depthPx,rfW,bH+depthPx);
+      ctx.restore();
+    }
+  }
+
+  // Label
+  ctx.fillStyle='rgba(255,255,255,.2)';
+  ctx.font=`11px sans-serif`;ctx.textAlign='center';
+  ctx.fillText(`3D Mockup · ${n} blades · ${settings.bladeWidth}mm × ${settings.bladeDepth}mm`,W/2,H-8);
+}
+
+/* Export: generate a blade strip canvas with bleed + crop marks */
+function makeBladePrintCanvas(img,bladeIndex,numBlades,bladeWPx,artHPx,bleedPx,side,label){
+  const c=document.createElement('canvas');
+  c.width=bladeWPx+2*bleedPx;
+  c.height=artHPx+2*bleedPx;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+
+  if(img){
+    const sx=(bladeIndex/numBlades)*img.width;
+    const sw=img.width/numBlades;
+    ctx.drawImage(img,sx,0,sw,img.height,bleedPx,bleedPx,bladeWPx,artHPx);
+  }
+
+  // Crop marks
+  const m=bleedPx*.55;
+  ctx.strokeStyle='#000';ctx.lineWidth=.8;
+  const marks=[
+    [0,bleedPx,m,bleedPx],[bleedPx,0,bleedPx,m],
+    [c.width,bleedPx,c.width-m,bleedPx],[c.width-bleedPx,0,c.width-bleedPx,m],
+    [0,artHPx+bleedPx,m,artHPx+bleedPx],[bleedPx,c.height,bleedPx,c.height-m],
+    [c.width,artHPx+bleedPx,c.width-m,artHPx+bleedPx],[c.width-bleedPx,c.height,c.width-bleedPx,c.height-m]
+  ];
+  ctx.beginPath();
+  marks.forEach(([x1,y1,x2,y2])=>{ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);});
+  ctx.stroke();
+
+  // Label strip at bottom bleed
+  if(bleedPx>4){
+    ctx.fillStyle='rgba(0,0,0,.65)';
+    ctx.font=`bold ${Math.max(7,Math.round(bleedPx*.55))}px monospace`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(label,c.width/2,c.height-bleedPx/2);
+    ctx.font=`${Math.max(6,Math.round(bleedPx*.4))}px monospace`;
+    ctx.fillStyle='rgba(0,0,0,.45)';
+    ctx.fillText(side,c.width/2,artHPx+bleedPx+bleedPx*.25);
+  }
+  return c;
+}
+
+function canvasToArrayBuffer(canvas,type='image/png'){
+  return new Promise(res=>canvas.toBlob(b=>b.arrayBuffer().then(res),type));
+}
+
+/* ================================================================
+   REACT COMPONENTS
+================================================================ */
+
+function Tip({text}){
+  return React.createElement('span',{className:'tip'},
+    React.createElement('span',{className:'tip-icon'},'?'),
+    React.createElement('span',{className:'tip-box'},text)
+  );
+}
+
+function Field({label,unit,tooltip,children}){
+  return React.createElement('div',{className:'field'},
+    React.createElement('label',null,
+      label,
+      unit&&React.createElement('span',{style:{fontWeight:400,color:'var(--dim)',marginLeft:3}},'('+unit+')'),
+      tooltip&&React.createElement(Tip,{text:tooltip})
+    ),
+    children
+  );
+}
+
+function NumInput({value,min,max,step,onChange}){
+  return React.createElement('input',{type:'number',value,min:min??0,max,step:step||1,
+    onChange:e=>{const v=parseFloat(e.target.value);if(!isNaN(v))onChange(v);}});
+}
+
+function UploadZone({label,badge,img,onUpload}){
+  const[drag,setDrag]=useState(false);
+  const ref=useRef();
+
+  const go=useCallback(file=>{
+    if(!file)return;
+    if(!file.type.startsWith('image/')){alert('Please upload an image file (JPG, PNG, WEBP, etc.)');return;}
+    if(file.size>60*1024*1024){alert('File is very large (>60MB). It may cause performance issues.');}
+    loadImageFromFile(file).then(img=>onUpload(img,file.name)).catch(e=>alert('Failed to load: '+e.message));
+  },[onUpload]);
+
+  return React.createElement('div',{
+    className:'upload-zone'+(drag?' drag':''),
+    onClick:()=>ref.current.click(),
+    onDragOver:e=>{e.preventDefault();setDrag(true);},
+    onDragLeave:()=>setDrag(false),
+    onDrop:e=>{e.preventDefault();setDrag(false);go(e.dataTransfer.files[0]);}
+  },
+    React.createElement('input',{ref,type:'file',accept:'image/*',onChange:e=>go(e.target.files[0])}),
+    img
+      ? React.createElement(React.Fragment,null,
+          React.createElement('img',{className:'thumb',src:img.src,alt:label}),
+          React.createElement('div',{style:{fontSize:11,color:'var(--ok)',marginTop:3}},label+' ✓'),
+          React.createElement('button',{className:'rep-btn',onClick:e=>{e.stopPropagation();ref.current.click();}},'Replace')
+        )
+      : React.createElement(React.Fragment,null,
+          React.createElement('div',{className:'uz-icon'},'🖼'),
+          React.createElement('div',{className:'uz-label'},label),
+          React.createElement('div',{style:{fontSize:10,color:'var(--dim)',marginTop:2}},'Click or drag image here')
+        ),
+    badge&&React.createElement('div',{style:{marginTop:6}},React.createElement('span',{className:'badge badge-acc'},badge))
+  );
+}
+
+function PreviewCanvas({canvasRef,label}){
+  return React.createElement('div',{className:'preview-wrap'},
+    React.createElement('canvas',{ref:canvasRef}),
+    React.createElement('div',{className:'preview-label'},label)
+  );
+}
+
+/* ================================================================
+   SETUP TAB
+================================================================ */
+function SetupTab({images,onUpload,settings,onSetting,numBlades,onTestMode}){
+  const S=settings;
+  const artWPx=cmToPx(S.artworkWidth,S.dpi);
+  const artHPx=cmToPx(S.artworkHeight,S.dpi);
+
+  return React.createElement('div',{className:'two-col'},
+    /* LEFT COLUMN */
+    React.createElement('div',null,
+      React.createElement('div',{className:'card'},
+        React.createElement('div',{className:'card-title'},'📁 Upload Images'),
+        React.createElement('div',{className:'mode-btns'},
+          React.createElement('div',{className:'mode-btn active',style:{fontSize:11}},'2 images (A+B)'),
+          React.createElement('div',{className:'mode-btn',style:{fontSize:11}},'+Background (A+B+C)')
+        ),
+        React.createElement('div',{style:{display:'flex',flexDirection:'column',gap:10}},
+          React.createElement(UploadZone,{label:'Image A — Left view',badge:'LEFT ANGLE',img:images.imgA,onUpload:(img,n)=>onUpload('imgA',img,n)}),
+          React.createElement(UploadZone,{label:'Image B — Right view',badge:'RIGHT ANGLE',img:images.imgB,onUpload:(img,n)=>onUpload('imgB',img,n)}),
+          React.createElement(UploadZone,{label:'Image C — Front/Background (optional)',badge:'OPTIONAL',img:images.imgC,onUpload:(img,n)=>onUpload('imgC',img,n)})
+        ),
+        React.createElement('div',{style:{marginTop:14,display:'flex',gap:8}},
+          React.createElement('button',{className:'btn btn-secondary',style:{fontSize:12},onClick:onTestMode},'🎲 Load test images'),
+          (images.imgC&&React.createElement('button',{className:'btn btn-secondary',style:{fontSize:12,color:'var(--danger)'},onClick:()=>onUpload('imgC',null,null)},'✕ Remove C'))
+        )
+      )
+    ),
+    /* RIGHT COLUMN */
+    React.createElement('div',{className:'col-right'},
+      React.createElement('div',{className:'card'},
+        React.createElement('div',{className:'card-title'},'📐 Artwork Dimensions'),
+        React.createElement('div',{className:'field-row'},
+          React.createElement(Field,{label:'Width',unit:'cm',tooltip:'Final printed artwork width in centimetres.'},
+            React.createElement(NumInput,{value:S.artworkWidth,min:5,max:300,step:.5,onChange:v=>onSetting('artworkWidth',v)})
+          ),
+          React.createElement(Field,{label:'Height',unit:'cm',tooltip:'Final printed artwork height in centimetres.'},
+            React.createElement(NumInput,{value:S.artworkHeight,min:5,max:300,step:.5,onChange:v=>onSetting('artworkHeight',v)})
+          )
+        ),
+        React.createElement(Field,{label:'DPI',tooltip:'Print resolution. 300 is standard for high-quality print. Lower values = smaller files.'},
+          React.createElement('select',{value:S.dpi,onChange:e=>onSetting('dpi',parseInt(e.target.value))},
+            React.createElement('option',{value:72},'72 DPI (screen preview)'),
+            React.createElement('option',{value:150},'150 DPI (draft print)'),
+            React.createElement('option',{value:300},'300 DPI (standard print)'),
+            React.createElement('option',{value:600},'600 DPI (high-res)')
+          )
+        ),
+        React.createElement('div',{className:'stats-row'},
+          React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.artworkWidth+'×'+S.artworkHeight),React.createElement('div',{className:'sk'},'cm')),
+          React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},artWPx+'×'+artHPx),React.createElement('div',{className:'sk'},'px (capped 4000)')),
+          React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.dpi),React.createElement('div',{className:'sk'},'dpi'))
+        )
+      ),
+      React.createElement('div',{className:'card'},
+        React.createElement('div',{className:'card-title'},'⚙️ Blade Settings'),
+        React.createElement('div',{className:'field-row'},
+          React.createElement(Field,{label:'Blade Width',unit:'mm',tooltip:'Width of each acrylic blade. Typical: 3–10 mm. Wider blades = more image per blade, but coarser transition.'},
+            React.createElement(NumInput,{value:S.bladeWidth,min:.5,max:50,step:.5,onChange:v=>onSetting('bladeWidth',v)})
+          ),
+          React.createElement(Field,{label:'Blade Depth',unit:'mm',tooltip:'How deep/thick the blade is (front to back). Typical: 10–30 mm. Deeper blades = sharper angle cutoff but less visible background.'},
+            React.createElement(NumInput,{value:S.bladeDepth,min:2,max:100,step:1,onChange:v=>onSetting('bladeDepth',v)})
+          )
+        ),
+        React.createElement('div',{className:'field-row'},
+          React.createElement(Field,{label:'Blade Spacing',unit:'mm',tooltip:'Gap between blades. Typical: 2–10 mm. Wider gaps = more background visible from front. 0 = blades touching.'},
+            React.createElement(NumInput,{value:S.bladeSpacing,min:0,max:50,step:.5,onChange:v=>onSetting('bladeSpacing',v)})
+          ),
+          React.createElement(Field,{label:'Bleed',unit:'mm',tooltip:'Extra bleed margin added around each blade print file. Standard: 2–5 mm.'},
+            React.createElement(NumInput,{value:S.bleed,min:0,max:20,step:.5,onChange:v=>onSetting('bleed',v)})
+          )
+        ),
+        React.createElement('div',{className:'stats-row',style:{marginTop:4}},
+          React.createElement('div',{className:'stat-box'},
+            React.createElement('div',{className:'sv',style:{color:'var(--acc)'}},numBlades),
+            React.createElement('div',{className:'sk'},'blades')
+          ),
+          React.createElement('div',{className:'stat-box'},
+            React.createElement('div',{className:'sv'},S.bladeWidth+'mm'),
+            React.createElement('div',{className:'sk'},'blade w')
+          ),
+          React.createElement('div',{className:'stat-box'},
+            React.createElement('div',{className:'sv'},S.bladeSpacing+'mm'),
+            React.createElement('div',{className:'sk'},'gap')
+          ),
+          React.createElement('div',{className:'stat-box'},
+            React.createElement('div',{className:'sv'},S.bladeDepth+'mm'),
+            React.createElement('div',{className:'sk'},'depth')
+          )
+        )
+      ),
+      React.createElement('div',{className:'warn-box'},
+        React.createElement('strong',null,'⚠ Production Note:'),' This tool generates layout and preview files for kinetic blade artwork. ',
+        'The real physical result depends on blade depth, material, print quality, lighting, and viewing distance. ',
+        React.createElement('strong',null,'Always make a small prototype before producing the final size.')
+      )
+    )
+  );
+}
+
+/* ================================================================
+   PREVIEW TAB
+================================================================ */
+function PreviewTab({images,settings,numBlades}){
+  const[angle,setAngle]=useState(0);
+  const refAngle=useRef();
+  const refLeft=useRef();
+  const refFront=useRef();
+  const refRight=useRef();
+  const ref3D=useRef();
+
+  const aspect=settings.artworkHeight/settings.artworkWidth;
+  const PW=480,PH=Math.round(PW*aspect);
+  const MINI_W=260,MINI_H=Math.round(MINI_W*aspect);
+
+  // Re-render all canvases when images/settings/angle change
+  useEffect(()=>{
+    const{imgA,imgB,imgC}=images;
+    if(refAngle.current){
+      refAngle.current.width=PW;refAngle.current.height=PH;
+      renderAngleView(refAngle.current,imgA,imgB,imgC,settings,angle);
+    }
+    if(refLeft.current){
+      refLeft.current.width=MINI_W;refLeft.current.height=MINI_H;
+      renderStaticView(refLeft.current,imgA,settings);
+    }
+    if(refFront.current){
+      refFront.current.width=MINI_W;refFront.current.height=MINI_H;
+      renderFrontView(refFront.current,imgA,imgB,imgC,settings);
+    }
+    if(refRight.current){
+      refRight.current.width=MINI_W;refRight.current.height=MINI_H;
+      renderStaticView(refRight.current,imgB,settings);
+    }
+    if(ref3D.current){
+      ref3D.current.width=MINI_W;ref3D.current.height=MINI_H;
+      render3DMockup(ref3D.current,imgA,imgB,imgC,settings);
+    }
+  },[images,settings,angle]);
+
+  const angleName=angle<-20?'LEFT VIEW':angle>20?'RIGHT VIEW':'FRONT VIEW';
+  const angleColor=angle<-20?'#7c6af5':angle>20?'#f59e0b':'var(--ok)';
+
+  return React.createElement('div',null,
+    /* Main angle view */
+    React.createElement('div',{className:'card',style:{marginBottom:16}},
+      React.createElement('div',{className:'card-title'},'🔭 Interactive Angle View'),
+      React.createElement('div',{style:{position:'relative'}},
+        React.createElement('div',{className:'preview-wrap'},
+          React.createElement('canvas',{ref:refAngle,style:{width:'100%',height:'auto',display:'block'}})
+        ),
+        React.createElement('div',{style:{position:'absolute',top:10,left:12,background:'rgba(0,0,0,.6)',padding:'4px 10px',borderRadius:20,fontSize:12,fontWeight:700,color:angleColor}},
+          angleName+' · '+angle+'°'
+        )
+      ),
+      React.createElement('div',{className:'slider-wrap'},
+        React.createElement('div',{className:'slider-val',style:{color:angleColor}},angle+'°'),
+        React.createElement('input',{type:'range',min:-45,max:45,step:1,value:angle,
+          onChange:e=>setAngle(parseInt(e.target.value))}),
+        React.createElement('div',{className:'slider-labels'},
+          React.createElement('span',null,'← -45° Left (Image A)'),
+          React.createElement('span',null,'0° Front'),
+          React.createElement('span',null,'Right (Image B) +45° →')
+        )
+      ),
+      React.createElement('div',{className:'info-box',style:{marginTop:8}},
+        '💡 Drag the slider to simulate the viewing angle. Move left to see Image A, right to see Image B. ',
+        'From straight on you see the background (Image C) or a blend.'
+      )
+    ),
+    /* Four views */
+    React.createElement('div',{className:'three-col'},
+      React.createElement(PreviewCanvas,{canvasRef:refLeft,label:'← Left view (Image A)'}),
+      React.createElement(PreviewCanvas,{canvasRef:refFront,label:'· Front view ·'}),
+      React.createElement(PreviewCanvas,{canvasRef:refRight,label:'Right view (Image B) →'})
+    ),
+    React.createElement('div',{style:{marginTop:12}},
+      React.createElement(PreviewCanvas,{canvasRef:ref3D,label:'3D Mockup (approximate)'}),
+    ),
+    React.createElement('div',{className:'warn-box',style:{marginTop:14}},
+      '⚠ This preview is an approximation. The real physical result depends on blade depth, spacing, material, print quality, lighting, and viewing distance. Always make a small prototype before producing the final size.'
+    )
+  );
+}
+
+/* ================================================================
+   EXPORT TAB
+================================================================ */
+function ExportTab({images,settings,numBlades,onExport,exporting,exportProgress,exportMsg}){
+  const S=settings;
+  const{imgA,imgB,imgC}=images;
+  const artWPx=Math.min(cmToPx(S.artworkWidth,S.dpi),4000);
+  const artHPx=Math.round(artWPx*(S.artworkHeight/S.artworkWidth));
+  const bladeWPx=Math.round(artWPx*(S.bladeWidth/(S.artworkWidth*10)));
+  const bleedPx=Math.round(artWPx*(S.bleed/(S.artworkWidth*10)));
+
+  const checks=[
+    {ok:!!imgA&&!!imgB,text:'Image A (left) and Image B (right) are uploaded'},
+    {ok:S.artworkWidth>0&&S.artworkHeight>0,text:'Artwork dimensions are set'},
+    {ok:S.bladeWidth>0,text:'Blade width is greater than zero'},
+    {ok:numBlades>0,text:`Number of blades calculated: ${numBlades}`},
+    {ok:S.bleed>0,text:'Bleed is set (recommended: 3 mm)'},
+    {ok:!!imgC,text:'Background image C uploaded (optional)',optional:true},
+    {ok:true,text:'Small test prototype is planned before final production',warn:true}
+  ];
+
+  return React.createElement('div',null,
+    /* Specs summary */
+    React.createElement('div',{className:'card'},
+      React.createElement('div',{className:'card-title'},'📋 Final Specifications'),
+      React.createElement('div',{className:'stats-row'},
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.artworkWidth+'×'+S.artworkHeight),React.createElement('div',{className:'sk'},'cm')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},artWPx+'×'+artHPx),React.createElement('div',{className:'sk'},'pixels')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.dpi),React.createElement('div',{className:'sk'},'dpi')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv',style:{color:'var(--acc)'}},numBlades),React.createElement('div',{className:'sk'},'blades')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.bladeWidth+'mm'),React.createElement('div',{className:'sk'},'blade w')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.bladeSpacing+'mm'),React.createElement('div',{className:'sk'},'spacing')),
+        React.createElement('div',{className:'stat-box'},React.createElement('div',{className:'sv'},S.bleed+'mm'),React.createElement('div',{className:'sk'},'bleed'))
+      )
+    ),
+    /* What will be exported */
+    React.createElement('div',{className:'card'},
+      React.createElement('div',{className:'card-title'},'📦 Export Contents'),
+      React.createElement('div',{style:{fontSize:13,color:'var(--dim)',lineHeight:2}},
+        React.createElement('div',null,'📁 ',React.createElement('strong',{style:{color:'var(--txt)'}},'print_files/image_A_left_blades/'),` — ${numBlades} PNG files (one per blade, left face, from Image A)`),
+        React.createElement('div',null,'📁 ',React.createElement('strong',{style:{color:'var(--txt)'}},'print_files/image_B_right_blades/'),` — ${numBlades} PNG files (one per blade, right face, from Image B)`),
+        imgC&&React.createElement('div',null,'📁 ',React.createElement('strong',{style:{color:'var(--txt)'}},'print_files/background_center/'),` — 1 PNG (full background, Image C)`),
+        React.createElement('div',null,'📁 ',React.createElement('strong',{style:{color:'var(--txt)'}},'preview_mockups/'),` — left, front, right, 3D previews`),
+        React.createElement('div',null,'📄 ',React.createElement('strong',{style:{color:'var(--txt)'}},'assembly_guide.html'),` — assembly instructions`),
+        React.createElement('div',null,'📄 ',React.createElement('strong',{style:{color:'var(--txt)'}},'technical_specs.txt'),` — full production specs`)
+      ),
+      React.createElement('div',{className:'info-box',style:{marginTop:12}},
+        `Each blade file includes a ${S.bleed}mm bleed margin and crop marks. Blade resolution: ~${bladeWPx}×${artHPx}px (+${bleedPx}px bleed each side).`,
+        bladeWPx<5&&' ⚠ Blade width in pixels is very small — consider increasing blade width or artwork size.'
+      )
+    ),
+    /* Checklist */
+    React.createElement('div',{className:'card'},
+      React.createElement('div',{className:'card-title'},'✅ Pre-Export Checklist'),
+      React.createElement('ul',{className:'checklist'},
+        checks.map((c,i)=>React.createElement('li',{key:i},
+          React.createElement('span',{className:'cli'},c.warn?'⚠️':c.ok?'✅':c.optional?'⬜':'❌'),
+          React.createElement('span',{style:{color:c.warn?'var(--acc2)':c.ok?'var(--txt)':c.optional?'var(--dim)':'var(--danger)'}},c.text)
+        ))
+      )
+    ),
+    /* Blade list preview */
+    React.createElement('div',{className:'card'},
+      React.createElement('div',{className:'card-title'},'🗂 Blade File List (preview)'),
+      React.createElement('div',{className:'blade-list'},
+        React.createElement('div',{className:'blade-row'},
+          React.createElement('div',null,'#'),
+          React.createElement('div',null,'Left face (Image A)'),
+          React.createElement('div',null,'Right face (Image B)')
+        ),
+        Array.from({length:numBlades},(_,i)=>
+          React.createElement('div',{className:'blade-row',key:i},
+            React.createElement('div',null,String(i+1).padStart(3,'0')),
+            React.createElement('div',{style:{color:'#a89aff'}},`Blade_${String(i+1).padStart(3,'0')}_Left_A.png`),
+            React.createElement('div',{style:{color:'#f5c060'}},`Blade_${String(i+1).padStart(3,'0')}_Right_B.png`)
+          )
+        )
+      )
+    ),
+    /* Production notes */
+    React.createElement('div',{className:'production-note'},
+      React.createElement('strong',null,'Production tips:'),React.createElement('br',null),
+      '• Use images with strong contrast and simple composition.',React.createElement('br',null),
+      '• Center faces/objects — keep important details away from blade edges.',React.createElement('br',null),
+      '• Text is risky — it can distort badly between viewing angles.',React.createElement('br',null),
+      '• Recommended blades: laser-cut clear acrylic / perspex, 2–3 mm thick.',React.createElement('br',null),
+      '• Backing board: aluminium dibond (3mm), MDF (6mm), or acrylic (5mm).',React.createElement('br',null),
+      '• Print method: UV direct print or vinyl with matte/satin lamination.'
+    ),
+    /* Export button */
+    React.createElement('div',{style:{marginTop:16}},
+      exporting
+        ? React.createElement('div',null,
+            React.createElement('div',{className:'prog-bar-wrap'},React.createElement('div',{className:'prog-bar',style:{width:exportProgress+'%'}})),
+            React.createElement('div',{style:{fontSize:13,color:'var(--dim)',marginTop:6}},exportMsg+` (${exportProgress}%)`)
+          )
+        : React.createElement('button',{
+            className:'btn btn-success btn-lg',
+            disabled:!imgA||!imgB||exporting,
+            onClick:onExport
+          },'⬇ Export Production ZIP',
+          (!imgA||!imgB)&&React.createElement('span',{style:{fontSize:11,fontWeight:400,marginLeft:4}},'(upload A+B first)')
+        )
+    )
+  );
+}
+
+/* ================================================================
+   MAIN APP
+================================================================ */
+function App(){
+  const[tab,setTab]=useState('setup');
+  const[images,setImages]=useState({imgA:null,imgB:null,imgC:null,nameA:'',nameB:'',nameC:''});
+  const[settings,setSettings]=useState({artworkWidth:60,artworkHeight:60,bladeWidth:5,bladeDepth:20,bladeSpacing:5,bleed:3,dpi:300});
+  const[exporting,setExporting]=useState(false);
+  const[exportProgress,setExportProgress]=useState(0);
+  const[exportMsg,setExportMsg]=useState('');
+
+  const numBlades=useMemo(()=>calcNumBlades(settings.artworkWidth,settings.bladeWidth,settings.bladeSpacing),[settings]);
+
+  const handleUpload=useCallback((key,img,name)=>{
+    setImages(prev=>({...prev,[key]:img,['name'+key.slice(3)]:name||''}));
+  },[]);
+
+  const handleSetting=useCallback((key,val)=>setSettings(s=>({...s,[key]:val})),[]);
+
+  const handleTestMode=useCallback(async()=>{
+    const[a,b,c]=await Promise.all([
+      generateTestImg(800,800,[[0,'#8b1a1a'],[.5,'#c0392b'],[1,'#e74c3c']],'Image A'),
+      generateTestImg(800,800,[[0,'#1a4a8b'],[.5,'#2980b9'],[1,'#3498db']],'Image B'),
+      generateTestImg(800,800,[[0,'#2d4a2d'],[.5,'#27ae60'],[1,'#2ecc71']],'BG-C')
+    ]);
+    setImages({imgA:a,imgB:b,imgC:c,nameA:'test_A.png',nameB:'test_B.png',nameC:'test_C.png'});
+  },[]);
+
+  const handleExport=useCallback(async()=>{
+    const{imgA,imgB,imgC}=images;
+    if(!imgA||!imgB){alert('Please upload Image A and Image B first.');return;}
+    setExporting(true);setExportProgress(0);
+
+    try{
+      const zip=new JSZip();
+      const S=settings;
+      const n=numBlades;
+
+      const MAX_PX=4000;
+      const artWPx=Math.min(cmToPx(S.artworkWidth,S.dpi),MAX_PX);
+      const artHPx=Math.round(artWPx*(S.artworkHeight/S.artworkWidth));
+      const bladeWPx=Math.max(2,Math.round(artWPx*(S.bladeWidth/(S.artworkWidth*10))));
+      const bleedPx=Math.max(0,Math.round(artWPx*(S.bleed/(S.artworkWidth*10))));
+
+      const leftFolder=zip.folder('print_files/image_A_left_blades');
+      const rightFolder=zip.folder('print_files/image_B_right_blades');
+
+      setExportMsg('Generating blade print files...');
+
+      for(let i=0;i<n;i++){
+        const pct=Math.round((i/n)*60);
+        setExportProgress(pct);
+
+        const lbl=String(i+1).padStart(3,'0');
+
+        const cA=makeBladePrintCanvas(imgA,i,n,bladeWPx,artHPx,bleedPx,`LEFT FACE · Image A`,`Blade_${lbl}_Left_A`);
+        const bufA=await canvasToArrayBuffer(cA);
+        leftFolder.file(`Blade_${lbl}_Left_A.png`,bufA);
+
+        const cB=makeBladePrintCanvas(imgB,i,n,bladeWPx,artHPx,bleedPx,`RIGHT FACE · Image B`,`Blade_${lbl}_Right_B`);
+        const bufB=await canvasToArrayBuffer(cB);
+        rightFolder.file(`Blade_${lbl}_Right_B.png`,bufB);
+      }
+
+      setExportProgress(62);setExportMsg('Generating background file...');
+
+      if(imgC){
+        const bgFolder=zip.folder('print_files/background_center');
+        const cC=document.createElement('canvas');
+        cC.width=artWPx+2*bleedPx;cC.height=artHPx+2*bleedPx;
+        const ctx=cC.getContext('2d');
+        ctx.fillStyle='#fff';ctx.fillRect(0,0,cC.width,cC.height);
+        drawImageCover(ctx,imgC,bleedPx,bleedPx,artWPx,artHPx);
+        // crop marks
+        const m=bleedPx*.55;
+        ctx.strokeStyle='#000';ctx.lineWidth=.8;
+        ctx.beginPath();
+        [[0,bleedPx,m,bleedPx],[bleedPx,0,bleedPx,m],[cC.width,bleedPx,cC.width-m,bleedPx],[cC.width-bleedPx,0,cC.width-bleedPx,m],
+         [0,artHPx+bleedPx,m,artHPx+bleedPx],[bleedPx,cC.height,bleedPx,cC.height-m],[cC.width,artHPx+bleedPx,cC.width-m,artHPx+bleedPx],[cC.width-bleedPx,cC.height,cC.width-bleedPx,cC.height-m]]
+        .forEach(([x1,y1,x2,y2])=>{ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);});
+        ctx.stroke();
+        const bufC=await canvasToArrayBuffer(cC);
+        bgFolder.file('Background_Center_C.png',bufC);
+      }
+
+      setExportProgress(65);setExportMsg('Rendering preview images...');
+
+      const pW=800,pH=Math.round(pW*(S.artworkHeight/S.artworkWidth));
+      const prevFolder=zip.folder('preview_mockups');
+
+      async function makePreview(renderFn,name){
+        const c=document.createElement('canvas');c.width=pW;c.height=pH;
+        renderFn(c);
+        const buf=await canvasToArrayBuffer(c);
+        prevFolder.file(name,buf);
+      }
+
+      await makePreview(c=>{renderStaticView(c,imgA,S);},'preview_left_angle.png');
+      await makePreview(c=>{renderFrontView(c,imgA,imgB,imgC,S);},'preview_front.png');
+      await makePreview(c=>{renderStaticView(c,imgB,S);},'preview_right_angle.png');
+      const m3W=800,m3H=Math.round(m3W*.65);
+      const c3=document.createElement('canvas');c3.width=m3W;c3.height=m3H;
+      render3DMockup(c3,imgA,imgB,imgC,S);
+      prevFolder.file('preview_3d_mockup.png',await canvasToArrayBuffer(c3));
+
+      setExportProgress(80);setExportMsg('Writing assembly guide...');
+
+      const guideRows=Array.from({length:n},(_,i)=>{
+        const l=String(i+1).padStart(3,'0');
+        return`<tr><td>${l}</td><td style="color:#5b5bd6">Blade_${l}_Left_A.png</td><td style="color:#b45309">Blade_${l}_Right_B.png</td></tr>`;
+      }).join('\n');
+
+      const guideHtml=`<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Assembly Guide — Kinetic Blade Artwork</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:860px;margin:40px auto;padding:20px;color:#222;line-height:1.6}
+h1{color:#5b5bd6;margin-bottom:4px}h2{color:#333;border-bottom:2px solid #eee;padding-bottom:6px;margin:24px 0 10px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;border:1px solid #ddd;text-align:left}
+th{background:#f5f5f8;font-weight:600}.warn{background:#fffbeb;border:1px solid #fbbf24;padding:12px 16px;border-radius:6px;margin:16px 0;font-size:13px}
+.step{padding:6px 0;font-size:14px}ol li{margin-bottom:8px}
+</style></head><body>
+<h1>🎨 Kinetic Blade Artwork — Assembly Guide</h1>
+<p style="color:#666;font-size:13px">Generated: ${new Date().toLocaleString()}</p>
+
+<h2>Artwork Specifications</h2>
+<table>
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>Artwork size</td><td>${S.artworkWidth} × ${S.artworkHeight} cm</td></tr>
+<tr><td>Print resolution</td><td>${S.dpi} DPI</td></tr>
+<tr><td>Number of blades</td><td>${n}</td></tr>
+<tr><td>Blade width</td><td>${S.bladeWidth} mm</td></tr>
+<tr><td>Blade depth (thickness)</td><td>${S.bladeDepth} mm</td></tr>
+<tr><td>Blade spacing (gap)</td><td>${S.bladeSpacing} mm</td></tr>
+<tr><td>Bleed</td><td>${S.bleed} mm</td></tr>
+<tr><td>Image A (left)</td><td>${images.nameA||'Image A'}</td></tr>
+<tr><td>Image B (right)</td><td>${images.nameB||'Image B'}</td></tr>
+${imgC?`<tr><td>Background (Image C)</td><td>${images.nameC||'Image C'} — included</td></tr>`:'<tr><td>Background (Image C)</td><td>Not used</td></tr>'}
+</table>
+
+<h2>Blade Assignment</h2>
+<table>
+<tr><th>Blade #</th><th>Left face (visible from left)</th><th>Right face (visible from right)</th></tr>
+${guideRows}
+</table>
+
+<h2>Assembly Steps</h2>
+<ol>
+<li>Prepare the backing board: <strong>${S.artworkWidth} × ${S.artworkHeight} cm</strong>. Recommended: aluminium dibond (3 mm), MDF (6 mm), or acrylic (5 mm).</li>
+${imgC?'<li>Print Background_Center_C.png and mount it flush to the backing board.</li>':''}
+<li>Print all blade strips from the folders <em>image_A_left_blades</em> and <em>image_B_right_blades</em>. Verify numbers and sides before cutting.</li>
+<li>Laser-cut acrylic blades: <strong>${S.bladeWidth} mm wide × ${S.artworkHeight*10} mm tall × ${S.bladeDepth} mm deep</strong>. Recommended: 2–3 mm thick clear acrylic.</li>
+<li>Apply <strong>Blade_XXX_Left_A.png</strong> strip to the <strong>left face</strong> of each correspondingly numbered blade.</li>
+<li>Apply <strong>Blade_XXX_Right_B.png</strong> strip to the <strong>right face</strong> of each correspondingly numbered blade.</li>
+<li>Attach blades vertically to the backing board, in order (Blade 001 = leftmost). Maintain <strong>${S.bladeSpacing} mm gap</strong> between blades.</li>
+<li>Allow adhesive to fully cure before mounting.</li>
+</ol>
+
+<div class="warn"><strong>⚠ Orientation check:</strong> The left face (Image A) faces <em>away from</em> the viewer's right. The right face (Image B) faces <em>away from</em> the viewer's left. Verify this before final assembly.</div>
+
+<h2>Viewing Notes</h2>
+<table>
+<tr><th>View</th><th>What you see</th><th>How</th></tr>
+<tr><td>Left angle</td><td>Image A</td><td>Stand ~${Math.round(S.artworkWidth*1.5)}–${Math.round(S.artworkWidth*2)}cm to the left, view at 30–45°</td></tr>
+<tr><td>Right angle</td><td>Image B</td><td>Stand ~${Math.round(S.artworkWidth*1.5)}–${Math.round(S.artworkWidth*2)}cm to the right, view at 30–45°</td></tr>
+<tr><td>Front / centre</td><td>${imgC?'Background Image C':'Blend of A+B'}</td><td>View from directly in front</td></tr>
+</table>
+
+<div class="warn"><strong>⚠ Always make a small test prototype first.</strong> A test of 10–15 blades at reduced scale will confirm blade spacing, image placement, and angle effect before full production. The visual result depends heavily on blade depth, spacing, material, lighting, and viewing distance.</div>
+</body></html>`;
+      zip.file('assembly_guide.html',guideHtml);
+
+      setExportProgress(88);setExportMsg('Writing technical specs...');
+
+      const specsActualWPx=cmToPx(S.artworkWidth,S.dpi),specsActualHPx=cmToPx(S.artworkHeight,S.dpi);
+      const specs=`KINETIC BLADE ARTWORK — TECHNICAL SPECIFICATIONS
+Generated: ${new Date().toLocaleString()}
+Tool: Kinetic Blade Artwork Studio (browser-based)
+
+═══════════════════════════════
+ARTWORK DIMENSIONS
+═══════════════════════════════
+Width:          ${S.artworkWidth} cm
+Height:         ${S.artworkHeight} cm
+Pixel dims:     ${specsActualWPx} × ${specsActualHPx} px (at ${S.dpi} DPI)
+Export px dims: ${artWPx} × ${artHPx} px (capped at 4000px for browser)
+DPI:            ${S.dpi}
+
+═══════════════════════════════
+BLADE SPECIFICATIONS
+═══════════════════════════════
+Number of blades: ${n}
+Blade width:      ${S.bladeWidth} mm
+Blade depth:      ${S.bladeDepth} mm
+Blade spacing:    ${S.bladeSpacing} mm
+Unit (w+gap):     ${S.bladeWidth+S.bladeSpacing} mm
+Bleed:            ${S.bleed} mm
+
+Image A file: ${images.nameA||'(custom upload)'}
+Image B file: ${images.nameB||'(custom upload)'}
+Image C file: ${imgC?(images.nameC||'(custom upload)'):'(not used)'}
+
+═══════════════════════════════
+MATERIAL RECOMMENDATIONS
+═══════════════════════════════
+Backing board:   Aluminium dibond 3 mm, MDF 6 mm, or acrylic 5 mm
+Blades:          Laser-cut clear acrylic / perspex, 2–3 mm thick
+Print method:    UV direct print, OR printed vinyl with matte/satin lamination
+Adhesive:        Silicone sealant, double-sided VHB tape, or small standoff bolts
+
+═══════════════════════════════
+ASSEMBLY NOTES
+═══════════════════════════════
+1. Each blade strip PNG includes ${S.bleed} mm bleed and crop marks.
+2. Blade numbering: 001 = leftmost blade.
+3. LEFT face of each blade → Blade_XXX_Left_A strip (Image A).
+4. RIGHT face of each blade → Blade_XXX_Right_B strip (Image B).
+5. Optimal viewing angle: 30–45° from centre.
+6. Optimal viewing distance: ${Math.round(S.artworkWidth*1.5)}–${Math.round(S.artworkWidth*2.5)} cm.
+7. Deeper blades = sharper cutoff angle (stricter viewing angle required).
+8. Wider spacing = more background visible from front.
+
+═══════════════════════════════
+WARNINGS
+═══════════════════════════════
+⚠ This file was generated by a browser-based tool.
+⚠ Always make a small prototype before full production.
+⚠ The visual result depends on blade depth, material, lighting, and viewing distance.
+⚠ Export resolution is capped at 4000px for browser performance.
+  For full ${specsActualWPx}×${specsActualHPx}px production files, re-export from a
+  desktop image editor using the same crop ratios.
+`;
+      zip.file('technical_specs.txt',specs);
+
+      setExportProgress(94);setExportMsg('Generating ZIP archive...');
+
+      const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'},
+        meta=>setExportProgress(94+Math.round(meta.percent*.06)));
+
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=`kinetic_artwork_${S.artworkWidth}x${S.artworkHeight}cm_${n}blades.zip`;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),10000);
+
+      setExportProgress(100);setExportMsg('✅ Done! ZIP downloaded.');
+    }catch(e){
+      console.error(e);
+      alert('Export failed: '+e.message+'\n\nFor very large artworks, try reducing DPI or artwork size.');
+      setExportProgress(0);setExportMsg('');
+    }finally{
+      setTimeout(()=>setExporting(false),2000);
+    }
+  },[images,settings,numBlades]);
+
+  const tabs=[
+    {id:'setup',label:'📁 Setup'},
+    {id:'preview',label:'🔭 Live Preview'},
+    {id:'export',label:'📦 Export'}
+  ];
+
+  const hasImages=images.imgA&&images.imgB;
+
+  return React.createElement('div',null,
+    React.createElement('header',{className:'app-header'},
+      React.createElement('div',{style:{fontSize:22}}, '🎭'),
+      React.createElement('div',null,
+        React.createElement('h1',null,'Kinetic Blade Artwork Studio'),
+        React.createElement('span',{className:'sub'},'Agamograph / kinetic blade artwork — production file generator')
+      ),
+      hasImages&&React.createElement('div',{style:{marginLeft:'auto',display:'flex',gap:8,alignItems:'center'}},
+        React.createElement('span',{className:'badge badge-ok'},numBlades+' blades'),
+        React.createElement('span',{className:'badge badge-acc'},settings.artworkWidth+'×'+settings.artworkHeight+' cm')
+      )
+    ),
+    React.createElement('nav',{className:'tab-bar'},
+      tabs.map(t=>React.createElement('button',{key:t.id,className:'tab-btn'+(tab===t.id?' active':''),onClick:()=>setTab(t.id)},t.label))
+    ),
+    React.createElement('main',{className:'main'},
+      tab==='setup'&&React.createElement(SetupTab,{images,onUpload:handleUpload,settings,onSetting:handleSetting,numBlades,onTestMode:handleTestMode}),
+      tab==='preview'&&React.createElement(PreviewTab,{images,settings,numBlades}),
+      tab==='export'&&React.createElement(ExportTab,{images,settings,numBlades,onExport:handleExport,exporting,exportProgress,exportMsg})
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
